@@ -2,10 +2,10 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.1
+version: 1.0.4
 apiversion: 2
 architectures: armeabi armeabi-v7a x86
-description: remotexml
+description: RemoteXML
 author: Rainer Schleevoigt
 license: Specify your license
 copyright: Copyright (c) 2016 by 
@@ -15,4 +15,4 @@ name: TiRemoteXML
 moduleid: de.appwerft.remotexml
 guid: a7ab5316-84ab-44b7-b8f9-fd527867f6cf
 platform: android
-minsdk: 3.5.1.GA
+minsdk: 4.2.0.GA

@@ -8,7 +8,7 @@ This is an Android Titanium module for retreiving remote XMLs via GET
 ```javascript
 var XMLClient = require("de.appwerft.remotexml");
 XMLClient.createClient({
-    url: URL,
+    url: "http://www.deutschlandfunk.de/podcast-studiozeit-aus-kultur-und-sozialwissenschaften.1149.de.podcast.xml",
     onLoad : function(e) {
         console.log(e);
     }
