@@ -16,10 +16,13 @@ import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
+import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.XML;
+
+import android.content.Context;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -36,6 +39,7 @@ public class ClientProxy extends KrollProxy {
 
 	private KrollFunction onLoad;
 	private KrollFunction onError;
+	Context ctx = TiApplication.getInstance().getApplicationContext();
 
 	// http://stackoverflow.com/questions/1823264/quickest-way-to-convert-xml-to-json-in-java
 	public ClientProxy() {
@@ -48,7 +52,7 @@ public class ClientProxy extends KrollProxy {
 	public void handleCreationDict(KrollDict options) {
 		super.handleCreationDict(options);
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_URL)) {
-			Log.d(LCAT, "containsKeyAndNotNull" + TiC.PROPERTY_URL);
+			Log.d(LCAT, "containsKeyAndNotNull=" + TiC.PROPERTY_URL);
 			final URI uri;
 			try {
 				Log.d(LCAT, "url=" + options.getString(TiC.PROPERTY_URL));
@@ -78,10 +82,8 @@ public class ClientProxy extends KrollProxy {
 		}
 		Log.d(LCAT, "props imported");
 		AsyncHttpClient client = new AsyncHttpClient();
-		if (this.post == true)
-			client.post(url, new XMLResponseHandler());
-		else
-			client.get(url, new XMLResponseHandler());
+
+		client.get(ctx, url, new XMLResponseHandler());
 		Log.d(LCAT, "action started");
 	}
 
@@ -89,29 +91,23 @@ public class ClientProxy extends KrollProxy {
 		@Override
 		public void onFailure(int status, Header[] header, byte[] response,
 				Throwable arg3) {
-			Log.d(LCAT, "onFailure");
 			if (onError != null)
 				onError.call(getKrollObject(), new KrollDict());
-
 		}
 
 		@Override
 		public void onSuccess(int status, Header[] header, byte[] response) {
-			Log.d(LCAT, "onSuccess");
-			JSONObject jsonObj = null;
 			try {
-				String xml = new String(response);
-				Log.d(LCAT, xml.substring(0, 999));
-				jsonObj = XML.toJSONObject(xml);
-				KrollDict res = new KrollDict(jsonObj);
-				onLoad.call(getKrollObject(), res);
+				JSONObject json = de.appwerft.xml2json.XML
+						.toJSONObject(new String(response));
 			} catch (JSONException e) {
-				Log.e("JSON exception", e.getMessage());
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// KrollDict res = new KrollDict(json);
+			// onLoad.call(getKrollObject(), res);
 
 		}
-
 	}
 
 }
