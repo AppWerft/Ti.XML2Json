@@ -126,9 +126,7 @@ public class ClientProxy extends KrollProxy {
 			HashMap<String, Object> hashMap = (map instanceof HashMap) ? (HashMap) map
 					: new HashMap<String, Object>(map);
 			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
-
 			resultEvent.put("data", hashMap.toString());
-
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
