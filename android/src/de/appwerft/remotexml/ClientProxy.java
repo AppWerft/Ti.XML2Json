@@ -18,9 +18,6 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
 
 import android.content.Context;
 
@@ -37,23 +34,22 @@ public class ClientProxy extends KrollProxy {
 	final String LCAT = "remXML ⚫️";
 	private String url;
 	private boolean post = false;
-
-	private KrollFunction onLoad;
-	private KrollFunction onError;
+	public KrollFunction onLoadCallback;
+	public KrollFunction onErrorCallback;
 	Context ctx = TiApplication.getInstance().getApplicationContext();
 
 	// http://stackoverflow.com/questions/1823264/quickest-way-to-convert-xml-to-json-in-java
 	public ClientProxy() {
 		super();
 		Log.d(LCAT, "ClientProxy created");
-
 	}
 
 	@Override
 	public void handleCreationDict(KrollDict options) {
-		super.handleCreationDict(options);
+		Log.d(LCAT, "handleCreationDict");
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_URL)) {
-			Log.d(LCAT, "containsKeyAndNotNull=" + TiC.PROPERTY_URL);
+			Log.d(LCAT, "containsKeyAndNotNull=" + TiC.PROPERTY_URL + "  "
+					+ TiC.PROPERTY_ONLOAD);
 			final URI uri;
 			try {
 				Log.d(LCAT, "url=" + options.getString(TiC.PROPERTY_URL));
@@ -72,15 +68,17 @@ public class ClientProxy extends KrollProxy {
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_ONLOAD)) {
 			Object cb = options.get(TiC.PROPERTY_ONLOAD);
 			if (cb instanceof KrollFunction) {
-				this.onLoad = (KrollFunction) cb;
+				Log.d(LCAT, TiC.PROPERTY_ONLOAD + " imported to this.onLoad");
+				this.onLoadCallback = (KrollFunction) cb;
 			}
 		}
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_ONERROR)) {
 			Object cb = options.get(TiC.PROPERTY_ONERROR);
 			if (cb instanceof KrollFunction) {
-				this.onError = (KrollFunction) cb;
+				this.onErrorCallback = (KrollFunction) cb;
 			}
 		}
+		super.handleCreationDict(options);
 		Log.d(LCAT, "props imported");
 		AsyncHttpClient client = new AsyncHttpClient();
 
@@ -92,24 +90,33 @@ public class ClientProxy extends KrollProxy {
 		@Override
 		public void onFailure(int status, Header[] header, byte[] response,
 				Throwable arg3) {
-			if (onError != null)
-				onError.call(getKrollObject(), new KrollDict());
+			if (onErrorCallback != null)
+
+				onErrorCallback.call(getKrollObject(), new KrollDict());
+
 		}
 
 		@Override
 		public void onSuccess(int status, Header[] header, byte[] response) {
-
 			try {
-				JSONObject json = XML.toJSONObject(new String(response));
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				onLoad(new KrollDict(org.jsonjava.XML.toJSONObject(
+						new String(response)).toMap()));
+			} catch (org.jsonjava.JSONException e) {
 				e.printStackTrace();
 			}
-			// KrollDict res = new KrollDict(json);
-			// onLoad.call(getKrollObject(), res);
-
 		}
+	}
+
+	private void onLoad(KrollDict data) {
+		if (onLoadCallback != null) {
+			KrollDict res = new KrollDict();
+			res.put("data", data);
+			res.put("runtime", 0);
+			res.put("parsetime", 0);
+			Log.d(LCAT, res.toString());
+			onLoadCallback.call(getKrollObject(), res);
+		} else
+			Log.e(LCAT, "no onLoadCallback callback found");
 	}
 
 }
