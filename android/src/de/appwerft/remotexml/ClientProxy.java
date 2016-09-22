@@ -20,6 +20,7 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.jsonjava.XML;
 
 import android.content.Context;
 
@@ -41,7 +42,7 @@ public class ClientProxy extends KrollProxy {
 	public KrollFunction onErrorCallback;
 	Context ctx = TiApplication.getInstance().getApplicationContext();
 	private long startTime = 0;
-	private long runTime = 0;
+	private long transferTime = 0;
 	private long parseTime = 0;
 	private long xmllength = 0;
 	private long jsonlength = 0;
@@ -107,38 +108,39 @@ public class ClientProxy extends KrollProxy {
 		public void onSuccess(int status, Header[] header, byte[] response) {
 			xmllength = response.length;
 			try {
-				runTime = System.currentTimeMillis() - startTime;
-				onLoad(new KrollDict(org.json.jsonjava.XML.toJSONObject(
-						new String(response)).toMap()));
+				transferTime = System.currentTimeMillis() - startTime;
+				startTime = System.currentTimeMillis();
+				onLoad(new KrollDict(XML.toJSONObject(new String(response))
+						.toMap()));
 			} catch (org.json.jsonjava.JSONException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
 	private void onLoad(KrollDict data) throws JSONException {
-
 		if (onLoadCallback != null) {
 			String jsonstring = data.toString();
 			jsonlength = jsonstring.length();
-			parseTime = System.currentTimeMillis() - runTime;
-			// KrollDict res = new KrollDict(gson.fromJson(jsonstring,
-			// data.getClass()));
-			KrollDict res = new KrollDict(JSON.parseObject(data.toString(),
-					JSONObject.class));
-			res.put("data", data);
+			KrollDict result = new KrollDict();
+			/*
+			 * JSONObject json = JSON.parseObject(data.toString(),
+			 * JSONObject.class);
+			 */
+			result.put("data", data);
+			parseTime = System.currentTimeMillis() - startTime;
+
 			KrollDict stats = new KrollDict();
-			stats.put("transfertime", runTime);
+			stats.put("transfertime", transferTime);
 			stats.put("parsetime", parseTime);
-			stats.put("converttime", parseTime);
+
 			stats.put("xmllength", xmllength);
 			stats.put("jsonlength", jsonlength);
-			res.put("statistics", stats);
-			Log.d(LCAT, res.toString());
-			onLoadCallback.call(getKrollObject(), res);
+			result.put("statistics", stats);
+			Log.d(LCAT, result.toString());
+			onLoadCallback.call(getKrollObject(), result);
 		} else
 			Log.e(LCAT, "no onLoadCallback callback found");
 	}

@@ -1,0 +1,56 @@
+{
+	"statistics": {
+		"parsetime": 49,
+		"jsonlength": 29797,
+		"transfertime": 2906,
+		"xmllength": 31994
+	},
+	"data": {
+		"rss": {
+			"xmlns:itunes": "http:\/\/www.itunes.com\/dtds\/podcast-1.0.dtd",
+			"channel": {
+				"link": "http:\/\/www.deutschlandfunk.de\/aus-kultur-und-sozialwissenschaften.1147.de.html",
+				"image": {
+					"link": "http:\/\/www.deutschlandfunk.de\/aus-kultur-und-sozialwissenschaften.1147.de.html",
+					"url": "http:\/\/www.deutschlandfunk.de\/media\/files\/a\/a802ebc40a23c25667285d72bb3fc2aev4.jpg",
+					"title": "Aus Kultur- und Sozialwissenschaften - Deutschlandfunk",
+					"description": "Feed provided by Deutschlandradio. Click to visit."
+				},
+				"copyright": "Deutschlandradio - deutschlandradio.de",
+				"lastBuildDate": "Thu, 22 Sep 2016 15:07:01 +0200",
+				"itunes:author": "Deutschlandfunk",
+				"itunes:explicit": "No",
+				"itunes:image": {
+					"href": "http:\/\/www.deutschlandfunk.de\/media\/files\/a\/a802ebc40a23c25667285d72bb3fc2aev4.jpg"
+				},
+				"itunes:owner": {
+					"itunes:email": "podcast@deutschlandradio.de",
+					"itunes:name": "Redaktion deutschlandradio.de"
+				},
+				"title": "Aus Kultur- und Sozialwissenschaften - Deutschlandfunk",
+				"description": "Soziologie, Philosophie, Geschichte, Anthropologie, Archäologie, Kommunikationswissenschaften … jeden Donnerstag um 20:10 Uhr das Wichtigste aus den Kultur- und Sozialwissenschaften. Hintergrundberichte, Interviews mit herausragenden Forscherpersönlichkeiten und aktuelle Beiträge über Studienergebnisse und wissenschaftliche Tagungen.",
+				"category": "Info",
+				"itunes:subtitle": "Die Beiträge zur Sendung",
+				"pubDate": "Thu, 22 Sep 2016 15:07:01 +0200",
+				"language": "de-DE",
+				"itunes:category": {
+					"text": "Society & Culture"
+				},
+				"item": [{
+					"title": "Forschungen zur Berufswahl  - Pilot, Topmodel oder Tierärztin?",
+					"description": "<img src=\"http:\/\/www.deutschlandfunk.de\/media\/thumbs\/6\/60b3921d0e0eb128fd19fd5fe390e56cv1_max_144x81_b3535db83dc50e27c1bb1392364c95a2.jpg\" alt=\"Zwei Piloten fliegen in einer Propellermaschine. (imago \/ Westend61)\" title=\"Zwei Piloten fliegen in einer Propellermaschine. (imago \/ Westend61)\" width=\"144\" height=\"81\" border=\"0\" align=\"left\" hspace=\"4\" vspace=\"4\"\/>\"Was willst du denn mal werden?\" Das ist eine der häufigsten Fragen, die jungen Menschen gestellt wird. Für die Kleinsten ist noch alles vorstellbar: Tierärztin oder Pilot, Müllmann oder Model. Die Berufswahlforschung untersucht, wie sich kindliche Wünsche entwickeln und nach welchen Kriterien eine Ausbildung oder ein Studienfach ausgewählt wird.<br clear=\"all\"\/><br\/>Von Andrea und Justin Westhoff<br\/>www.deutschlandfunk.de, Aus Kultur- und Sozialwissenschaften<br\/>Hören bis: 24.03.2017 19:44<br\/><a href=\"http:\/\/podcast-mp3.dradio.de\/podcast\/2016\/09\/15\/berufswahlforschung_dlf_20160915_2044_299749e4.mp3\">Direkter Link zur Audiodatei<\/a><br\/><p><br\/><\/p>",
+					"link": "http:\/\/www.deutschlandfunk.de\/forschungen-zur-berufswahl-pilot-topmodel-oder-tieraerztin.1148.de.html?dram:article_id=365812",
+					"guid": "http:\/\/podcast-mp3.dradio.de\/podcast\/2016\/09\/15\/berufswahlforschung_dlf_20160915_2044_299749e4.mp3",
+					"itunes:duration": "14:51",
+					"pubDate": "Thu, 15 Sep 2016 20:44:05 +0200",
+					"enclosure": {
+						"type": "audio\/mpeg",
+						"length": 14227377,
+						"url": "http:\/\/podcast-mp3.dradio.de\/podcast\/2016\/09\/15\/berufswahlforschung_dlf_20160915_2044_299749e4.mp3"
+					},
+					"itunes:author": "Westhoff, Andrea und Justin"
+				}]
+			}
+		}
+	}
+}
