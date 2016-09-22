@@ -10,6 +10,7 @@ var XMLClient = require("de.appwerft.remotexml");
 XMLClient.createClient({
     url: "http://www.deutschlandfunk.de/podcast-studiozeit-aus-kultur-und-sozialwissenschaften.1149.de.podcast.xml",
     onLoad : function(e) {
-        console.log(e);
+        console.log(JSON.parse(e.json));
+        console.log(e.statistics);
     }
 });
