@@ -18,11 +18,12 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
+import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -107,23 +108,27 @@ public class ClientProxy extends KrollProxy {
 			xmllength = response.length;
 			try {
 				runTime = System.currentTimeMillis() - startTime;
-				onLoad(new KrollDict(org.jsonjava.XML.toJSONObject(
+				onLoad(new KrollDict(org.json.jsonjava.XML.toJSONObject(
 						new String(response)).toMap()));
-			} catch (org.jsonjava.JSONException e) {
+			} catch (org.json.jsonjava.JSONException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void onLoad(KrollDict data) {
-		Gson gson = new Gson();
+	private void onLoad(KrollDict data) throws JSONException {
+
 		if (onLoadCallback != null) {
 			String jsonstring = data.toString();
 			jsonlength = jsonstring.length();
 			parseTime = System.currentTimeMillis() - runTime;
 			// KrollDict res = new KrollDict(gson.fromJson(jsonstring,
 			// data.getClass()));
-			KrollDict res = new KrollDict();
+			KrollDict res = new KrollDict(JSON.parseObject(data.toString(),
+					JSONObject.class));
 			res.put("data", data);
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", runTime);

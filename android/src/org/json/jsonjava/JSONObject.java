@@ -1,4 +1,4 @@
-package org.jsonjava;
+package org.json.jsonjava;
 
 /*
  Copyright (c) 2002 JSON.org
