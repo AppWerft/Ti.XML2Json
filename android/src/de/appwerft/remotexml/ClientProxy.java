@@ -11,7 +11,6 @@ package de.appwerft.remotexml;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
@@ -21,12 +20,10 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.jsonjava.XML;
 
 import android.content.Context;
 
-import com.alibaba.fastjson.JSON;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -112,7 +109,7 @@ public class ClientProxy extends KrollProxy {
 			try {
 				transferTime = System.currentTimeMillis() - startTime;
 				startTime = System.currentTimeMillis();
-				onLoad(XML.toJSONObject(new String(response)).toMap());
+				onLoad(XML.toJSONObject(new String(response)));
 			} catch (org.json.jsonjava.JSONException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -121,21 +118,20 @@ public class ClientProxy extends KrollProxy {
 		}
 	}
 
-	private void onLoad(Map<String, Object> map) throws JSONException {
+	private void onLoad(org.json.jsonjava.JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
-			HashMap<String, Object> hashMap = (map instanceof HashMap) ? (HashMap) map
-					: new HashMap<String, Object>(map);
+
 			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
-			resultEvent.put("data", hashMap.toString());
+			resultEvent.put("data", new HashMap<String, Object>(json.toMap()));
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
 			stats.put("parsetime", parseTime);
 			stats.put("xmllength", xmllength);
-			stats.put("jsonlength", hashMap.toString().length());
-			map.put("statistics", stats);
+			stats.put("jsonlength", json.toString().length());
+			json.put("statistics", stats);
 			Log.d(LCAT, resultEvent.toString());
-			onLoadCallback.callAsync(getKrollObject(), resultEvent);
+			onLoadCallback.call(getKrollObject(), resultEvent);
 		} else
 			Log.e(LCAT, "no onLoadCallback callback found");
 	}
