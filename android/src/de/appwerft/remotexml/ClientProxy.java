@@ -10,6 +10,8 @@ package de.appwerft.remotexml;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
@@ -110,8 +112,7 @@ public class ClientProxy extends KrollProxy {
 			try {
 				transferTime = System.currentTimeMillis() - startTime;
 				startTime = System.currentTimeMillis();
-				onLoad(new KrollDict(XML.toJSONObject(new String(response))
-						.toMap()));
+				onLoad(XML.toJSONObject(new String(response)).toMap());
 			} catch (org.json.jsonjava.JSONException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -120,21 +121,23 @@ public class ClientProxy extends KrollProxy {
 		}
 	}
 
-	private void onLoad(KrollDict data) throws JSONException {
+	private void onLoad(Map<String, Object> map) throws JSONException {
 		if (onLoadCallback != null) {
-			String jsonstring = data.toString();
-			jsonlength = jsonstring.length();
-			KrollDict result = new KrollDict();
-			result.put("data", jsonstring);
+			HashMap<String, Object> hashMap = (map instanceof HashMap) ? (HashMap) map
+					: new HashMap<String, Object>(map);
+			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
+
+			resultEvent.put("data", hashMap.toString());
+
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
 			stats.put("parsetime", parseTime);
 			stats.put("xmllength", xmllength);
-			stats.put("jsonlength", jsonlength);
-			result.put("statistics", stats);
-			Log.d(LCAT, result.get("json").toString());
-			onLoadCallback.call(getKrollObject(), result);
+			stats.put("jsonlength", hashMap.toString().length());
+			map.put("statistics", stats);
+			Log.d(LCAT, resultEvent.toString());
+			onLoadCallback.callAsync(getKrollObject(), resultEvent);
 		} else
 			Log.e(LCAT, "no onLoadCallback callback found");
 	}
