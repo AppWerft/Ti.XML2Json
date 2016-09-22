@@ -125,21 +125,15 @@ public class ClientProxy extends KrollProxy {
 			String jsonstring = data.toString();
 			jsonlength = jsonstring.length();
 			KrollDict result = new KrollDict();
-			/*
-			 * JSONObject json = JSON.parseObject(data.toString(),
-			 * JSONObject.class);
-			 */
-			result.put("data", data);
+			result.put("data", jsonstring);
 			parseTime = System.currentTimeMillis() - startTime;
-
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
 			stats.put("parsetime", parseTime);
-
 			stats.put("xmllength", xmllength);
 			stats.put("jsonlength", jsonlength);
 			result.put("statistics", stats);
-			Log.d(LCAT, result.toString());
+			Log.d(LCAT, result.get("json").toString());
 			onLoadCallback.call(getKrollObject(), result);
 		} else
 			Log.e(LCAT, "no onLoadCallback callback found");
