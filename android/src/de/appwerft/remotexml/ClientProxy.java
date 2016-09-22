@@ -20,6 +20,7 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 
 import android.content.Context;
 
@@ -97,9 +98,10 @@ public class ClientProxy extends KrollProxy {
 
 		@Override
 		public void onSuccess(int status, Header[] header, byte[] response) {
+
 			try {
-				JSONObject json = de.appwerft.xml2json.XML
-						.toJSONObject(new String(response));
+				JSONObject json = XML.toJSONObject(new String(response));
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
