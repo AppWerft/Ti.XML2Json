@@ -18,9 +18,11 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
+import org.json.JSONObject;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -37,6 +39,11 @@ public class ClientProxy extends KrollProxy {
 	public KrollFunction onLoadCallback;
 	public KrollFunction onErrorCallback;
 	Context ctx = TiApplication.getInstance().getApplicationContext();
+	private long startTime = 0;
+	private long runTime = 0;
+	private long parseTime = 0;
+	private long xmllength = 0;
+	private long jsonlength = 0;
 
 	// http://stackoverflow.com/questions/1823264/quickest-way-to-convert-xml-to-json-in-java
 	public ClientProxy() {
@@ -79,9 +86,8 @@ public class ClientProxy extends KrollProxy {
 			}
 		}
 		super.handleCreationDict(options);
-		Log.d(LCAT, "props imported");
+		startTime = System.currentTimeMillis();
 		AsyncHttpClient client = new AsyncHttpClient();
-
 		client.get(ctx, url, new XMLResponseHandler());
 		Log.d(LCAT, "action started");
 	}
@@ -98,7 +104,9 @@ public class ClientProxy extends KrollProxy {
 
 		@Override
 		public void onSuccess(int status, Header[] header, byte[] response) {
+			xmllength = response.length;
 			try {
+				runTime = System.currentTimeMillis() - startTime;
 				onLoad(new KrollDict(org.jsonjava.XML.toJSONObject(
 						new String(response)).toMap()));
 			} catch (org.jsonjava.JSONException e) {
@@ -108,11 +116,22 @@ public class ClientProxy extends KrollProxy {
 	}
 
 	private void onLoad(KrollDict data) {
+		Gson gson = new Gson();
 		if (onLoadCallback != null) {
+			String jsonstring = data.toString();
+			jsonlength = jsonstring.length();
+			parseTime = System.currentTimeMillis() - runTime;
+			// KrollDict res = new KrollDict(gson.fromJson(jsonstring,
+			// data.getClass()));
 			KrollDict res = new KrollDict();
 			res.put("data", data);
-			res.put("runtime", 0);
-			res.put("parsetime", 0);
+			KrollDict stats = new KrollDict();
+			stats.put("transfertime", runTime);
+			stats.put("parsetime", parseTime);
+			stats.put("converttime", parseTime);
+			stats.put("xmllength", xmllength);
+			stats.put("jsonlength", jsonlength);
+			res.put("statistics", stats);
 			Log.d(LCAT, res.toString());
 			onLoadCallback.call(getKrollObject(), res);
 		} else
