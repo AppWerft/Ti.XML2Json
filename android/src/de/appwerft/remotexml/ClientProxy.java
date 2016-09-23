@@ -38,6 +38,8 @@ import cz.msebera.android.httpclient.Header;
 public class ClientProxy extends KrollProxy {
 	final String LCAT = "remXML ⚫️";
 	private String url;
+	private String xml;
+
 	private boolean post = false;
 	public KrollFunction onLoadCallback;
 	public KrollFunction onErrorCallback;
@@ -83,10 +85,23 @@ public class ClientProxy extends KrollProxy {
 				this.onErrorCallback = (KrollFunction) cb;
 			}
 		}
+		if (options.containsKeyAndNotNull("xml")) {
+			xml = options.getString("xml");
+		}
 		super.handleCreationDict(options);
 		startTime = System.currentTimeMillis();
-		AsyncHttpClient client = new AsyncHttpClient();
-		client.get(ctx, url, new XMLResponseHandler());
+		if (url != null) {
+			AsyncHttpClient client = new AsyncHttpClient();
+			client.get(ctx, url, new XMLResponseHandler());
+		}
+		if (xml != null) {
+			JSONObject json = de.appwerft.remotexml.JSON.toJSON(xml);
+			try {
+				onLoad(json);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private final class XMLResponseHandler extends AsyncHttpResponseHandler {
@@ -118,14 +133,12 @@ public class ClientProxy extends KrollProxy {
 			xmllength = response.length;
 			transferTime = System.currentTimeMillis() - startTime;
 			startTime = System.currentTimeMillis();
-			Object object = de.appwerft.remotexml.JSON.toJSON(XML
+			JSONObject json = de.appwerft.remotexml.JSON.toJSON(XML
 					.toJSONObject(xml));
-			if (object instanceof org.json.JSONObject) {
-				try {
-					onLoad((JSONObject) object);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+			try {
+				onLoad(json);
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
 
 		}
@@ -134,10 +147,7 @@ public class ClientProxy extends KrollProxy {
 	private void onLoad(JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
 			HashMap<String, Object> payLoad = new HashMap<String, Object>();
-			Object object = de.appwerft.remotexml.JSON.toMap(json);
-			if (object instanceof org.json.JSONObject) {
-				payLoad.put("data", new KrollDict((org.json.JSONObject) object));
-			}
+			payLoad.put("data", new KrollDict((org.json.JSONObject) json));
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
