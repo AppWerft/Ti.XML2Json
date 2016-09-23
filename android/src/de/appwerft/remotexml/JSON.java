@@ -1,7 +1,15 @@
 package de.appwerft.remotexml;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.appcelerator.kroll.common.Log;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class JSON {
 	final static String LCAT = "importJSON  🌀️";
@@ -15,7 +23,6 @@ public class JSON {
 				for (String key : foo.keySet()) {
 					bar.put(key, toJSON(foo.get(key)));
 				}
-				Log.d(LCAT + "O", bar.toString());
 				return bar;
 			} else if (value instanceof org.json.jsonjava.JSONArray) {
 				// Copy if node is array
@@ -24,16 +31,15 @@ public class JSON {
 				for (int i = 0; i < foo.length(); i++) {
 					bar.put(toJSON(foo.get(i)));
 				}
-				Log.d(LCAT + "A", bar.toString());
 				return bar;
 			} else if (value == org.json.jsonjava.JSONObject.NULL) {
 				return null;
 			} else if (value instanceof String) {
+
 			}
 		} catch (JSONException e) {
 			Log.e(LCAT, e.getMessage());
 		}
-
 		return value;
 	}
 }

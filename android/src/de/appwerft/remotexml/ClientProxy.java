@@ -99,9 +99,7 @@ public class ClientProxy extends KrollProxy {
 		public void onFailure(int status, Header[] header, byte[] response,
 				Throwable arg3) {
 			if (onErrorCallback != null)
-
 				onErrorCallback.call(getKrollObject(), new KrollDict());
-
 		}
 
 		@Override
@@ -121,28 +119,19 @@ public class ClientProxy extends KrollProxy {
 
 	private void onLoad(org.json.jsonjava.JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
-			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
-			Object o = de.appwerft.remotexml.JSON.toJSON(json);
-			Log.d(LCAT, "!!!!!!");
-			if (o instanceof JSONObject) {
-				// JSONObject payload = new JSONObject(o);//
-				// resultEvent.put("data", payload);
+			HashMap<String, Object> payLoad = new HashMap<String, Object>();
+			Object object = de.appwerft.remotexml.JSON.toJSON(json);
+			if (object instanceof org.json.JSONObject) {
+				payLoad.put("data", new KrollDict((org.json.JSONObject) object));
 			}
-			/*
-			 * org.json.jsonjava.JSONObject data = new
-			 * org.json.jsonjava.JSONObject( json.toString());
-			 */
-			// Log.d(LCAT, payload.toString());
-
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
 			stats.put("parsetime", parseTime);
 			stats.put("xmllength", xmllength);
 			stats.put("jsonlength", json.toString().length());
-			json.put("statistics", stats);
-			Log.d(LCAT, resultEvent.toString());
-			onLoadCallback.call(getKrollObject(), resultEvent);
+			payLoad.put("statistics", stats);
+			onLoadCallback.call(getKrollObject(), payLoad);
 		} else
 			Log.e(LCAT, "no onLoadCallback callback found");
 	}
