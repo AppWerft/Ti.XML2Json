@@ -52,8 +52,8 @@ var xml = '<?xml version="1.0" encoding="UTF-8"?>
 <PRICE>8.90</PRICE>
 <YEAR>1990</YEAR>
 </CD>
-
 </CATALOG>';
+
 var XMLClient = require("de.appwerft.remotexml");
 XMLClient.createClient({
     xml : xml,
