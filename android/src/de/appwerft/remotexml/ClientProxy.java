@@ -20,6 +20,8 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.json.JSONException;
+import org.json.jsonjava.JSONArray;
+import org.json.jsonjava.JSONObject;
 import org.json.jsonjava.XML;
 
 import android.content.Context;
@@ -118,11 +120,38 @@ public class ClientProxy extends KrollProxy {
 		}
 	}
 
+	private Object toKrollDict(Object value) {
+		try {
+			if (value instanceof org.json.jsonjava.JSONObject) {
+				org.json.JSONObject jsonObj = new org.json.JSONObject();
+				for (Object key : ((org.json.jsonjava.JSONObject) value)
+						.keySet()) {
+					String keyStr = (String) key;
+					Object keyvalue = jsonObj.get(keyStr);
+					jsonObj.put(keyStr, keyvalue);
+				}
+				return new KrollDict(jsonObj);
+			} else if (value instanceof org.json.jsonjava.JSONArray) {
+				org.json.JSONArray array = new org.json.JSONArray(
+						((org.json.jsonjava.JSONArray) value).length());
+				for (int i = 0; i < array.length(); i++) {
+					array.put(i,
+							toKrollDict(((org.json.jsonjava.JSONArray) value)
+									.get(i)));
+				}
+				return array;
+			} else if (value == org.json.jsonjava.JSONObject.NULL) {
+				return null;
+			}
+		} catch (JSONException e) {
+		}
+		return value;
+	}
+
 	private void onLoad(org.json.jsonjava.JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
-
 			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
-			resultEvent.put("data", new HashMap<String, Object>(json.toMap()));
+			resultEvent.put("data", toKrollDict(json));
 			parseTime = System.currentTimeMillis() - startTime;
 			KrollDict stats = new KrollDict();
 			stats.put("transfertime", transferTime);
