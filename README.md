@@ -18,7 +18,7 @@ XMLClient.createClient({
 ```
 With  XML string:
 ```javascript
-var xml = "<?xml version="1.0" encoding="UTF-8"?>
+var xml = '<?xml version="1.0" encoding="UTF-8"?>
 <CATALOG>
 <CD>
 <TITLE>Empire Burlesque</TITLE>
@@ -228,7 +228,7 @@ var xml = "<?xml version="1.0" encoding="UTF-8"?>
 <PRICE>8.20</PRICE>
 <YEAR>1987</YEAR>
 </CD>
-</CATALOG>";
+</CATALOG>';
 var XMLClient = require("de.appwerft.remotexml");
 XMLClient.createClient({
     xml : xml,
