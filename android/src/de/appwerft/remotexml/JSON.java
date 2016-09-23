@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class JSON {
 	final static String LCAT = "importJSON  🌀️";
 
-	public static Object toJSON(Object value) {
+	public static JSONObject toJSON(Object value) {
 		try {
 			if (value instanceof org.json.jsonjava.JSONObject) {
 				// Copy if node is object
@@ -23,7 +23,7 @@ public class JSON {
 				for (String key : foo.keySet()) {
 					bar.put(key, toJSON(foo.get(key)));
 				}
-				return bar;
+				return (JSONObject) bar;
 			} else if (value instanceof org.json.jsonjava.JSONArray) {
 				// Copy if node is array
 				org.json.jsonjava.JSONArray foo = (org.json.jsonjava.JSONArray) value;
@@ -31,7 +31,9 @@ public class JSON {
 				for (int i = 0; i < foo.length(); i++) {
 					bar.put(toJSON(foo.get(i)));
 				}
-				return bar;
+				JSONObject res = new JSONObject();
+				res.put("list", bar);
+				return res;
 			} else if (value == org.json.jsonjava.JSONObject.NULL) {
 				return null;
 			} else if (value instanceof String) {
@@ -40,6 +42,6 @@ public class JSON {
 		} catch (JSONException e) {
 			Log.e(LCAT, e.getMessage());
 		}
-		return value;
+		return null;
 	}
 }

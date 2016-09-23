@@ -8,6 +8,7 @@
  */
 package de.appwerft.remotexml;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -55,13 +56,9 @@ public class ClientProxy extends KrollProxy {
 
 	@Override
 	public void handleCreationDict(KrollDict options) {
-		Log.d(LCAT, "handleCreationDict");
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_URL)) {
-			Log.d(LCAT, "containsKeyAndNotNull=" + TiC.PROPERTY_URL + "  "
-					+ TiC.PROPERTY_ONLOAD);
 			final URI uri;
 			try {
-				Log.d(LCAT, "url=" + options.getString(TiC.PROPERTY_URL));
 				uri = new URI(options.getString(TiC.PROPERTY_URL));
 				this.url = uri.toString();
 			} catch (URISyntaxException e) {
@@ -77,7 +74,6 @@ public class ClientProxy extends KrollProxy {
 		if (options.containsKeyAndNotNull(TiC.PROPERTY_ONLOAD)) {
 			Object cb = options.get(TiC.PROPERTY_ONLOAD);
 			if (cb instanceof KrollFunction) {
-				Log.d(LCAT, TiC.PROPERTY_ONLOAD + " imported to this.onLoad");
 				this.onLoadCallback = (KrollFunction) cb;
 			}
 		}
@@ -91,7 +87,6 @@ public class ClientProxy extends KrollProxy {
 		startTime = System.currentTimeMillis();
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(ctx, url, new XMLResponseHandler());
-		Log.d(LCAT, "action started");
 	}
 
 	private final class XMLResponseHandler extends AsyncHttpResponseHandler {
@@ -104,23 +99,42 @@ public class ClientProxy extends KrollProxy {
 
 		@Override
 		public void onSuccess(int status, Header[] header, byte[] response) {
-			xmllength = response.length;
-			try {
-				transferTime = System.currentTimeMillis() - startTime;
-				startTime = System.currentTimeMillis();
-				onLoad(XML.toJSONObject(new String(response)));
-			} catch (org.json.jsonjava.JSONException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
+			String charset = "UTF-8";
+			for (int i = 0; i < header.length; i++) {
+				if (header[i].getName() == "Content-Type") {
+					String[] parts = header[i].getValue().split("; ");
+					if (parts != null) {
+						charset = parts[1].replace("charset=", "")
+								.toUpperCase();
+					}
+				}
 			}
+			String xml = "";
+			try {
+				xml = new String(response, charset);
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+			xmllength = response.length;
+			transferTime = System.currentTimeMillis() - startTime;
+			startTime = System.currentTimeMillis();
+			Object object = de.appwerft.remotexml.JSON.toJSON(XML
+					.toJSONObject(xml));
+			if (object instanceof org.json.JSONObject) {
+				try {
+					onLoad((JSONObject) object);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
 		}
 	}
 
-	private void onLoad(org.json.jsonjava.JSONObject json) throws JSONException {
+	private void onLoad(JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
 			HashMap<String, Object> payLoad = new HashMap<String, Object>();
-			Object object = de.appwerft.remotexml.JSON.toJSON(json);
+			Object object = de.appwerft.remotexml.JSON.toMap(json);
 			if (object instanceof org.json.JSONObject) {
 				payLoad.put("data", new KrollDict((org.json.JSONObject) object));
 			}
