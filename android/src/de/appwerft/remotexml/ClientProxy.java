@@ -122,7 +122,7 @@ public class ClientProxy extends KrollProxy {
 	private void onLoad(org.json.jsonjava.JSONObject json) throws JSONException {
 		if (onLoadCallback != null) {
 			HashMap<String, Object> resultEvent = new HashMap<String, Object>();
-			Object o = de.appwerft.remotexml.JSON.fromJSON(json);
+			Object o = de.appwerft.remotexml.JSON.toJSON(json);
 			Log.d(LCAT, "!!!!!!");
 			if (o instanceof JSONObject) {
 				// JSONObject payload = new JSONObject(o);//
