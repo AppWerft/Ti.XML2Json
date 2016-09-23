@@ -123,15 +123,18 @@ public class ClientProxy extends KrollProxy {
 	private Object toKrollDict(Object value) {
 		try {
 			if (value instanceof org.json.jsonjava.JSONObject) {
+				Log.d(LCAT, "org.json.jsonjava.JSONObject");
 				org.json.JSONObject jsonObj = new org.json.JSONObject();
 				for (Object key : ((org.json.jsonjava.JSONObject) value)
 						.keySet()) {
 					String keyStr = (String) key;
 					Object keyvalue = jsonObj.get(keyStr);
+					Log.e(LCAT, keyStr);
 					jsonObj.put(keyStr, keyvalue);
 				}
 				return new KrollDict(jsonObj);
 			} else if (value instanceof org.json.jsonjava.JSONArray) {
+				Log.d(LCAT, "org.json.jsonjava.Array");
 				org.json.JSONArray array = new org.json.JSONArray(
 						((org.json.jsonjava.JSONArray) value).length());
 				for (int i = 0; i < array.length(); i++) {
@@ -142,8 +145,10 @@ public class ClientProxy extends KrollProxy {
 				return array;
 			} else if (value == org.json.jsonjava.JSONObject.NULL) {
 				return null;
-			}
+			} else
+				Log.d(LCAT, "no type matching");
 		} catch (JSONException e) {
+			Log.e(LCAT, e.getMessage());
 		}
 		return value;
 	}
