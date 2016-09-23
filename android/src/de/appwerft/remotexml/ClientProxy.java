@@ -39,6 +39,7 @@ public class ClientProxy extends KrollProxy {
 	final String LCAT = "remXML ⚫️";
 	private String url;
 	private String xml;
+	private HashMap<String, Object> jsonResult;
 
 	private boolean post = false;
 	public KrollFunction onLoadCallback;
@@ -54,6 +55,10 @@ public class ClientProxy extends KrollProxy {
 	public ClientProxy() {
 		super();
 		Log.d(LCAT, "ClientProxy created");
+	}
+
+	public KrollDict getJSON() {
+		return new KrollDict(jsonResult);
 	}
 
 	@Override
@@ -97,7 +102,7 @@ public class ClientProxy extends KrollProxy {
 		if (xml != null) {
 			JSONObject json = de.appwerft.remotexml.JSON.toJSON(xml);
 			try {
-				onLoad(json);
+				buildPayload(json);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -133,10 +138,10 @@ public class ClientProxy extends KrollProxy {
 			xmllength = response.length;
 			transferTime = System.currentTimeMillis() - startTime;
 			startTime = System.currentTimeMillis();
-			JSONObject json = de.appwerft.remotexml.JSON.toJSON(XML
-					.toJSONObject(xml));
+			JSONObject json = de.appwerft.remotexml.JSON
+					.toJSON(org.json.jsonjava.XML.toJSONObject(xml));
 			try {
-				onLoad(json);
+				buildPayload(json);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -144,19 +149,18 @@ public class ClientProxy extends KrollProxy {
 		}
 	}
 
-	private void onLoad(JSONObject json) throws JSONException {
+	private void buildPayload(JSONObject json) throws JSONException {
+		jsonResult = new HashMap<String, Object>();
+		jsonResult.put("data", new KrollDict((org.json.JSONObject) json));
+		parseTime = System.currentTimeMillis() - startTime;
+		KrollDict stats = new KrollDict();
+		stats.put("transfertime", transferTime);
+		stats.put("parsetime", parseTime);
+		stats.put("xmllength", xmllength);
+		stats.put("jsonlength", json.toString().length());
+		jsonResult.put("statistics", stats);
 		if (onLoadCallback != null) {
-			HashMap<String, Object> payLoad = new HashMap<String, Object>();
-			payLoad.put("data", new KrollDict((org.json.JSONObject) json));
-			parseTime = System.currentTimeMillis() - startTime;
-			KrollDict stats = new KrollDict();
-			stats.put("transfertime", transferTime);
-			stats.put("parsetime", parseTime);
-			stats.put("xmllength", xmllength);
-			stats.put("jsonlength", json.toString().length());
-			payLoad.put("statistics", stats);
-			onLoadCallback.call(getKrollObject(), payLoad);
-		} else
-			Log.e(LCAT, "no onLoadCallback callback found");
+			onLoadCallback.call(getKrollObject(), jsonResult);
+		}
 	}
 }
