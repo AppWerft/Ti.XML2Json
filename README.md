@@ -52,47 +52,7 @@ var xml = '<?xml version="1.0" encoding="UTF-8"?>
 <PRICE>8.90</PRICE>
 <YEAR>1990</YEAR>
 </CD>
-<CD>
-<TITLE>Stop</TITLE>
-<ARTIST>Sam Brown</ARTIST>
-<COUNTRY>UK</COUNTRY>
-<COMPANY>A and M</COMPANY>
-<PRICE>8.90</PRICE>
-<YEAR>1988</YEAR>
-</CD>
-<CD>
-<TITLE>Bridge of Spies</TITLE>
-<ARTIST>T'Pau</ARTIST>
-<COUNTRY>UK</COUNTRY>
-<COMPANY>Siren</COMPANY>
-<PRICE>7.90</PRICE>
-<YEAR>1987</YEAR>
-</CD>
-<CD>
-<TITLE>Private Dancer</TITLE>
-<ARTIST>Tina Turner</ARTIST>
-<COUNTRY>UK</COUNTRY>
-<COMPANY>Capitol</COMPANY>
-<PRICE>8.90</PRICE>
-<YEAR>1983</YEAR>
-</CD>
-<CD>
-<TITLE>Midt om natten</TITLE>
-<ARTIST>Kim Larsen</ARTIST>
-<COUNTRY>EU</COUNTRY>
-<COMPANY>Medley</COMPANY>
-<PRICE>7.80</PRICE>
-<YEAR>1983</YEAR>
-</CD>
 
-<CD>
-<TITLE>Unchain my heart</TITLE>
-<ARTIST>Joe Cocker</ARTIST>
-<COUNTRY>USA</COUNTRY>
-<COMPANY>EMI</COMPANY>
-<PRICE>8.20</PRICE>
-<YEAR>1987</YEAR>
-</CD>
 </CATALOG>';
 var XMLClient = require("de.appwerft.remotexml");
 XMLClient.createClient({
