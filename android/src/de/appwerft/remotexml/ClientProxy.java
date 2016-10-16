@@ -145,7 +145,6 @@ public class ClientProxy extends KrollProxy {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -154,6 +153,7 @@ public class ClientProxy extends KrollProxy {
 		jsonResult.put("data", new KrollDict((org.json.JSONObject) json));
 		parseTime = System.currentTimeMillis() - startTime;
 		KrollDict stats = new KrollDict();
+
 		stats.put("transfertime", transferTime);
 		stats.put("parsetime", parseTime);
 		stats.put("xmllength", xmllength);
